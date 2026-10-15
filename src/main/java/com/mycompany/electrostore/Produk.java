@@ -1,6 +1,6 @@
 package com.mycompany.electrostore;
 
-public class Produk {
+public abstract class Produk {
     private String nama;
     private String merk;
     private double harga;
@@ -44,10 +44,8 @@ public class Produk {
     }
 
     public void tampilkanInfo() {
-        System.out.printf("Nama: %-20s | Merk: %-10s | Harga: Rp%.2f", this.nama, this.merk, this.harga);
+        System.out.printf("Nama: %-20s | Merk: %-10s | Harga: Rp%.0f", this.nama, this.merk, this.harga);
     }
 
-    public void garansi() {
-        System.out.println("-> Garansi standar toko: 1 Bulan.");
-    }
+    public abstract void garansi();
 }

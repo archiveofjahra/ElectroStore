@@ -13,11 +13,11 @@ public class ElectroStore {
             if (daftar[i].getNama().equalsIgnoreCase(nama)) {
                 System.out.print(">> ");
                 daftar[i].tampilkanInfo();
-                daftar[i].garansi();
+                simulasiProsesLayanan(daftar[i]);
                 ditemukan = true;
             }
         }
-        if (!ditemukan) System.out.println("[-] Produk dengan nama tersebut tidak ditemukan.");
+        if (!ditemukan) System.out.println("[-] Perangkat tidak ditemukan.");
     }
 
     public static void cariProduk(String merk, boolean isMerk, Produk[] daftar, int jumlah) {
@@ -29,14 +29,45 @@ public class ElectroStore {
             if (daftar[i].getMerk().equalsIgnoreCase(merk)) {
                 System.out.print(">> ");
                 daftar[i].tampilkanInfo();
+                simulasiProsesLayanan(daftar[i]);
                 ditemukan = true;
             }
         }
-        if (!ditemukan) System.out.println("[-] Produk dengan merk tersebut tidak ditemukan.");
+        if (!ditemukan) System.out.println("[-] Perangkat dengan merk tersebut tidak ditemukan.");
+    }
+
+    public static void cariProduk(double hargaMaksimal, Produk[] daftar, int jumlah) {
+        System.out.println("\n--------------------------------------------------");
+        System.out.printf(" Hasil Pencarian Produk <= Rp%.0f%n", hargaMaksimal);
+        System.out.println("--------------------------------------------------");
+        boolean ditemukan = false;
+        for (int i = 0; i < jumlah; i++) {
+            if (daftar[i].getHarga() <= hargaMaksimal) {
+                System.out.print(">> ");
+                daftar[i].tampilkanInfo();
+                ditemukan = true;
+            }
+        }
+        if (!ditemukan) System.out.println("[-] Tidak ada perangkat di bawah batas harga tersebut.");
+    }
+
+    public static void simulasiProsesLayanan(Produk item) {
+        item.garansi();
+
+        if (item instanceof DapatDipinjam) {
+            DapatDipinjam itemSewa = (DapatDipinjam) item;
+            itemSewa.prosesSewaFisik();
+        }
+
+        if (item instanceof DapatDinilai) {
+            DapatDinilai itemRating = (DapatDinilai) item;
+            itemRating.beriRating(5);
+        }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         Produk[] daftarProduk = new Produk[20];
         int jumlahProduk = 0;
         boolean isRunning = true;
@@ -50,13 +81,13 @@ public class ElectroStore {
 
         while (isRunning) {
             System.out.println("\n==================================================");
-            System.out.println("     ELECTROSTORE ADVANCED INVENTORY SYSTEM (CLI) ");
+            System.out.println("   ELECTROSTORE ADVANCED INVENTORY SYSTEM (CLI)   ");
             System.out.println("==================================================");
             System.out.println(" [1] Tambah Produk Baru");
-            System.out.println(" [2] Lihat Seluruh Inventaris");
-            System.out.println(" [3] Cari Produk (Fitur Overloading)");
-            System.out.println(" [4] Filter Kategori Produk");
-            System.out.println(" [5] Edit Harga Produk");
+            System.out.println(" [2] Daftar Seluruh Perangkat");
+            System.out.println(" [3] Cari Produk");
+            System.out.println(" [4] Filter Kategori Perangkat Produk");
+            System.out.println(" [5] Pembaruan Harga");
             System.out.println(" [6] Laporan Aset & Analisis Gudang");
             System.out.println(" [7] Keluar");
             System.out.println("==================================================");
@@ -106,68 +137,70 @@ public class ElectroStore {
                             scanner.nextLine();
                             daftarProduk[jumlahProduk++] = new Smartwatch(nama, merk, harga, tahanAir);
                         } else {
-                            System.out.println("[-] Pilihan jenis perangkat tidak valid!");
+                            System.out.println("[-] Pilihan tidak valid!");
                             break;
                         }
-                        System.out.println("[+] SUKSES: Produk baru berhasil ditambahkan ke sistem.");
+                        System.out.println("[+] SUKSES: Perangkat berhasil ditambahkan.");
                     } else {
-                        System.out.println("[-] ERROR: Kapasitas gudang inventaris sudah penuh!");
+                        System.out.println("[-] Gudang penuh!");
                     }
                 }
 
                 case 2 -> {
-                    System.out.println("\n>>> DAFTAR INVENTARIS PRODUK TERSIMPAN <<<");
-                    if (jumlahProduk == 0) {
-                        System.out.println("[-] Belum ada produk yang tersimpan.");
-                    } else {
-                        for (int i = 0; i < jumlahProduk; i++) {
-                            System.out.print((i + 1) + ". ");
-                            daftarProduk[i].tampilkanInfo();
-                            daftarProduk[i].garansi();
-                            System.out.println();
-                        }
-                        System.out.println("--------------------------------------------------");
-                        System.out.println("* Total Objek Berhasil Dibuat: " + Produk.totalProdukBerhasilDibuat);
+                    System.out.println("\n>>> DAFTAR INVENTARIS & SIMULASI POLIMORFISME <<<");
+                    for (int i = 0; i < jumlahProduk; i++) {
+                        System.out.print((i + 1) + ". ");
+                        daftarProduk[i].tampilkanInfo();
+                        simulasiProsesLayanan(daftarProduk[i]);
+                        System.out.println();
                     }
-                    System.out.print("\nTekan Enter untuk kembali ke menu...");
+                    System.out.println("--------------------------------------------------");
+                    System.out.println("* Total Perangkat Berhasil Dibuat: " + Produk.totalProdukBerhasilDibuat);
+                    System.out.print("\nTekan Enter untuk kembali...");
                     scanner.nextLine();
                 }
 
                 case 3 -> {
-                    System.out.println("\n>>> FITUR PENCARIAN PRODUK (OVERLOADING) <<<");
-                    System.out.println("1. Cari Berdasarkan Nama Produk");
-                    System.out.println("2. Cari Berdasarkan Merk Produk");
-                    System.out.print("Pilih Metode Cari (1/2): ");
+                    System.out.println("\n>>> FITUR PENCARIAN PRODUK <<<");
+                    System.out.println("1. Cari Berdasarkan Nama");
+                    System.out.println("2. Cari Berdasarkan Merk");
+                    System.out.println("3. Cari Berdasarkan Batas Harga Maksimal");
+                    System.out.print("Pilih Metode Cari (1-3): ");
                     int modeCari = scanner.nextInt();
                     scanner.nextLine();
 
                     if (modeCari == 1) {
-                        System.out.print("Masukkan Kata Kunci Nama: ");
+                        System.out.print("Masukkan Nama Produk: ");
                         String namaCari = scanner.nextLine();
                         cariProduk(namaCari, daftarProduk, jumlahProduk);
                     } else if (modeCari == 2) {
-                        System.out.print("Masukkan Kata Kunci Merk: ");
+                        System.out.print("Masukkan Merk Produk: ");
                         String merkCari = scanner.nextLine();
                         cariProduk(merkCari, true, daftarProduk, jumlahProduk);
+                    } else if (modeCari == 3) {
+                        System.out.print("Masukkan Batas Harga Maksimal (Rp): ");
+                        double maxHarga = scanner.nextDouble();
+                        scanner.nextLine();
+                        cariProduk(maxHarga, daftarProduk, jumlahProduk);
                     } else {
-                        System.out.println("[-] Pilihan mode pencarian tidak valid.");
+                        System.out.println("[-] Pilihan tidak valid.");
                     }
                     System.out.print("\nTekan Enter untuk kembali...");
                     scanner.nextLine();
                 }
 
                 case 4 -> {
-                    System.out.println("\n>>> FILTER KATEGORI PRODUK <<<");
-                    System.out.println("1. Tampilkan Khusus Laptop");
-                    System.out.println("2. Tampilkan Khusus Smartphone");
-                    System.out.println("3. Tampilkan Khusus Tablet");
-                    System.out.println("4. Tampilkan Khusus Smartwatch");
+                    System.out.println("\n>>> FILTER KATEGORI <<<");
+                    System.out.println("1. Khusus Laptop");
+                    System.out.println("2. Khusus Smartphone");
+                    System.out.println("3. Khusus Tablet");
+                    System.out.println("4. Khusus Smartwatch");
                     System.out.print("Pilih Filter (1-4): ");
                     int filter = scanner.nextInt();
                     scanner.nextLine();
 
-                    boolean ada = false;
                     System.out.println("\n--- Hasil Filter ---");
+                    boolean ada = false;
                     for (int i = 0; i < jumlahProduk; i++) {
                         if (filter == 1 && daftarProduk[i] instanceof Laptop) {
                             daftarProduk[i].tampilkanInfo();
@@ -183,7 +216,7 @@ public class ElectroStore {
                             ada = true;
                         }
                     }
-                    if (!ada) System.out.println("[-] Tidak ada produk dalam kategori ini.");
+                    if (!ada) System.out.println("[-] Perangkat dalam kategori ini tidak ditemukan.");
                     System.out.print("\nTekan Enter untuk kembali...");
                     scanner.nextLine();
                 }
@@ -191,9 +224,9 @@ public class ElectroStore {
                 case 5 -> {
                     System.out.println("\n>>> EDIT HARGA PRODUK <<<");
                     for (int i = 0; i < jumlahProduk; i++) {
-                        System.out.println((i + 1) + ". " + daftarProduk[i].getNama() + " - Rp" + daftarProduk[i].getHarga());
+                        System.out.printf("%d. %-18s - Rp%.0f%n", (i + 1), daftarProduk[i].getNama(), daftarProduk[i].getHarga());
                     }
-                    System.out.print("Pilih nomor produk yang ingin diubah harganya: ");
+                    System.out.print("Pilih nomor produk: ");
                     int noProduk = scanner.nextInt();
                     scanner.nextLine();
 
@@ -203,7 +236,7 @@ public class ElectroStore {
                         scanner.nextLine();
 
                         daftarProduk[noProduk - 1].setHarga(hargaBaru);
-                        System.out.println("[+] SUKSES: Harga produk berhasil diperbarui.");
+                        System.out.println("[+] SUKSES: Harga berhasil diperbarui.");
                     } else {
                         System.out.println("[-] Nomor produk tidak ditemukan!");
                     }
@@ -229,11 +262,11 @@ public class ElectroStore {
 
                         System.out.println("--------------------------------------------------");
                         System.out.printf(" Total Unit Tersimpan     : %d Unit%n", jumlahProduk);
-                        System.out.printf(" Total Nilai Aset Gudang  : Rp%.2f%n", totalAset);
-                        System.out.printf(" Rata-rata Harga Perangkat: Rp%.2f%n", (totalAset / jumlahProduk));
+                        System.out.printf(" Total Nilai Aset Gudang  : Rp%.0f%n", totalAset);
+                        System.out.printf(" Rata-rata Harga Perangkat: Rp%.0f%n", (totalAset / jumlahProduk));
                         System.out.println("--------------------------------------------------");
-                        System.out.println(" [+] Produk Termahal : " + termahal.getNama() + " (Rp" + termahal.getHarga() + ")");
-                        System.out.println(" [+] Produk Termurah : " + termurah.getNama() + " (Rp" + termurah.getHarga() + ")");
+                        System.out.printf(" [+] Produk Termahal : %s (Rp%.0f)%n", termahal.getNama(), termahal.getHarga());
+                        System.out.printf(" [+] Produk Termurah : %s (Rp%.0f)%n", termurah.getNama(), termurah.getHarga());
                         System.out.println("--------------------------------------------------");
                     }
                     System.out.print("\nTekan Enter untuk kembali...");
@@ -247,7 +280,7 @@ public class ElectroStore {
                     isRunning = false;
                 }
 
-                default -> System.out.println("[-] Opsi menu tidak valid. Pilih angka 1-7.");
+                default -> System.out.println("[-] Opsi menu tidak valid.");
             }
         }
         scanner.close();
