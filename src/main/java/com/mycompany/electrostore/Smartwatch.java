@@ -24,7 +24,7 @@ public class Smartwatch extends Produk {
     }
 
     @Override
-    public void caraPinjam() {
+    public void garansi() {
         System.out.println("-> Info Garansi: Garansi Resmi Smartwatch 1 Tahun Replacement.");
     }
 }

@@ -23,7 +23,7 @@ public class Smartphone extends Produk {
     }
 
     @Override
-    public void caraPinjam() {
+    public void garansi() {
         System.out.println("-> Info Garansi: Garansi Resmi Smartphone 1 Tahun.");
     }
 }

@@ -47,7 +47,7 @@ public class Produk {
         System.out.printf("Nama: %-20s | Merk: %-10s | Harga: Rp%.2f", this.nama, this.merk, this.harga);
     }
 
-    public void caraPinjam() {
+    public void garansi() {
         System.out.println("-> Garansi standar toko: 1 Bulan.");
     }
 }

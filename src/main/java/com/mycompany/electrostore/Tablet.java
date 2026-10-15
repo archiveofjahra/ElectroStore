@@ -23,7 +23,7 @@ public class Tablet extends Produk {
     }
 
     @Override
-    public void caraPinjam() {
+    public void garansi() {
         System.out.println("-> Info Garansi: Garansi Resmi Tablet 1 Tahun.");
     }
 }

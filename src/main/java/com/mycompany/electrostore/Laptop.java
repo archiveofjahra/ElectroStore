@@ -23,7 +23,7 @@ public class Laptop extends Produk {
     }
 
     @Override
-    public void caraPinjam() {
+    public void garansi() {
         System.out.println("-> Info Garansi: Garansi Resmi Laptop 2 Tahun.");
     }
 }
